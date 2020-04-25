@@ -94,6 +94,8 @@ app.post("/failure", function(req, res) {
 
 
 //Set our server application to listen to port 3000
-app.listen(3000, function() {
+//If hosting by heroku, update it to process.env.PORT or OR it so that heroku can change it on the fly on their end
+//and it can also run locally
+app.listen(process.env.PORT || 3000, function() {
   console.log("Server started and running on port 3000.");
 });

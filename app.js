@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 
+//Module to handle POST and GET requests to external Servers
+const https = require('https');
+
 //Create and initialize an Node Express app
 const app = express();
 
@@ -24,7 +27,53 @@ app.post("/", function(req, res) {
   const fname = req.body.firstName;
   const lname = req.body.lastName;
   const email = req.body.email;
-  console.log(email);
+
+  //POSTing a data to the Mailchimp server via their API
+  //https://mailchimp.com/developer/guides/get-started-with-mailchimp-api-3/#Parameters
+  //For PATCH, PUT, and POST requests, you may need to include a request body in JSON format.
+  //https://mailchimp.com/developer/reference/lists/#post_/lists/-list_id-
+
+  //Request Body Parameters in the form of JSON
+  const body_data = {
+    members: [{
+      email_address: email,
+      status: "subscribed",
+      merge_fields: {
+        FNAME: fname,
+        LNAME: lname
+      }
+    }],
+  };
+  const body_data_json = JSON.stringify(body_data);
+
+  //Request path parameter requires the List Id
+  //ListID
+  //9bf82f3e4a
+  const url = "https://us8.api.mailchimp.com/3.0/lists/9bf82f3e4a";
+
+  //Perform POST request to Mailchimp server using https module
+  //https://nodejs.org/api/https.html#https_https_request_options_callback
+  //Mailchimp API Keys
+  //234d8624d2285b246cfe0b33384cde47-us8
+  const options = {
+    method: "POST",
+    auth: "cm:234d8624d2285b246cfe0b33384cde47-us8"
+  }
+
+  //Create the request object
+  const requestToMcserver = https.request(url, options, function(mcResponse) {
+    //Check for any "data" that we are sent back from the Mailchimp Server
+    mcResponse.on("data", function(data) {
+      console.log(JSON.parse(data));
+    });
+  });
+
+  //Write the request body to send to Mailchimp server
+  requestToMcserver.write(body_data_json);
+
+  //Signify end of request
+  requestToMcserver.end();
+
 });
 
 

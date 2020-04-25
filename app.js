@@ -62,10 +62,17 @@ app.post("/", function(req, res) {
 
   //Create the request object
   const requestToMcserver = https.request(url, options, function(mcResponse) {
+
+    if (mcResponse.statusCode === 200) {
+      res.sendFile(__dirname + "/success.html");
+    } else {
+      res.sendFile(__dirname + "/failure.html");
+    }
+
     //Check for any "data" that we are sent back from the Mailchimp Server
-    mcResponse.on("data", function(data) {
-      console.log(JSON.parse(data));
-    });
+    // mcResponse.on("data", function(data) {
+    //   console.log(JSON.parse(data));
+    // });
   });
 
   //Write the request body to send to Mailchimp server
@@ -76,7 +83,9 @@ app.post("/", function(req, res) {
 
 });
 
-
+app.post("/failure", function(req, res) {
+  res.redirect("/");
+});
 
 
 

@@ -54,10 +54,9 @@ app.post("/", function(req, res) {
   //Perform POST request to Mailchimp server using https module
   //https://nodejs.org/api/https.html#https_https_request_options_callback
   //Mailchimp API Keys
-  //234d8624d2285b246cfe0b33384cde47-us8
   const options = {
     method: "POST",
-    auth: "cm:234d8624d2285b246cfe0b33384cde47-us8"
+    auth: "input API here"
   }
 
   //Create the request object
